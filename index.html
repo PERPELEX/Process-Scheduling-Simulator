@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Scheduler</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .gantt-chart, .time-chart, .process-data {
+            display: flex;
+            flex-direction: row;
+        }
+        .process {
+            text-align: center;
+            margin: 2px;
+        }
+        .time-chart div, .process-data div {
+            margin: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Process Scheduler</h1>
+        <form>
+            <label for="fileUpload">Upload a file:</label>
+            <input type="file" id="fileUpload" name="fileUpload">
+            <br>
+            <input type="radio" id="fcfs" name="scheduling" value="fcfs" checked>
+            <label for="fcfs">First Come First Serve</label><br>
+            <input type="radio" id="sjf" name="scheduling" value="sjf">
+            <label for="sjf">Shortest Job First</label><br>
+            <input type="radio" id="rr" name="scheduling" value="rr">
+            <label for="rr">Round Robin</label><br>
+            <div id="timeQuantumDiv" style="display: none;">
+                <label for="timeQuantum">Time Quantum:</label>
+                <input type="number" id="timeQuantum" name="timeQuantum" min="1">
+            </div>
+            <input type="radio" id="priority" name="scheduling" value="priority">
+            <label for="priority">Priority Scheduling</label>
+        </form>
+        <section>
+            <div class="gantt-chart"></div>
+            <div class="time-chart"></div>
+            <div class="process-data"></div>
+        </section>
+        
+    </main>
+
+    <script src="./script.js"></script>
+    <script>
+        document.querySelectorAll('input[name="scheduling"]').forEach((elem) => {
+            elem.addEventListener("change", function(event) {
+                document.getElementById('timeQuantumDiv').style.display = event.target.value == 'rr' ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
