@@ -5,41 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Process Scheduler</title>
     <link rel="stylesheet" href="./style.css">
-    <style>
-        .gantt-chart, .time-chart, .process-data {
-            display: flex;
-            flex-direction: row;
-        }
-        .process {
-            text-align: center;
-            margin: 2px;
-        }
-        .time-chart div, .process-data div {
-            margin: 2px;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <main>
-        <h1>Process Scheduler</h1>
+        <div class="glassy-shape title">
+            <h1>Process Scheduler</h1>
+        </div>  
+        
         <form>
-            <label for="fileUpload">Upload a file:</label>
-            <input type="file" id="fileUpload" name="fileUpload">
-            <br>
-            <input type="radio" id="fcfs" name="scheduling" value="fcfs" checked>
-            <label for="fcfs">First Come First Serve</label><br>
-            <input type="radio" id="sjf" name="scheduling" value="sjf">
-            <label for="sjf">Shortest Job First</label><br>
-            <input type="radio" id="rr" name="scheduling" value="rr">
-            <label for="rr">Round Robin</label><br>
-            <div id="timeQuantumDiv" style="display: none;">
-                <label for="timeQuantum">Time Quantum:</label>
-                <input type="number" id="timeQuantum" name="timeQuantum" min="1">
-            </div>
-            <input type="radio" id="priority" name="scheduling" value="priority">
-            <label for="priority">Priority Scheduling</label>
+            <section class="file-section">
+                <label for="fileUpload">Upload a file:</label>
+                <input class="glassy-shape file" type="file" id="fileUpload" name="fileUpload">
+            </section>
+            <section class="radio-section">
+                <input type="radio" id="fcfs" name="scheduling" value="fcfs" checked>
+                <label for="fcfs">First Come First Serve</label><br>
+                <input type="radio" id="sjf" name="scheduling" value="sjf">
+                <label for="sjf">Shortest Job First</label><br>
+                <input type="radio" id="rr" name="scheduling" value="rr">
+                <label for="rr">Round Robin</label><br>
+                <div id="timeQuantumDiv" style="display: none;">
+                    <label for="timeQuantum">Time Quantum:</label>
+                    <input type="number" id="timeQuantum" name="timeQuantum" min="1">
+                </div>
+                <input type="radio" id="priority" name="scheduling" value="priority">
+                <label for="priority">Priority Scheduling</label>
+            </section>
         </form>
+
         <section>
             <div class="gantt-chart"></div>
             <div class="time-chart"></div>
