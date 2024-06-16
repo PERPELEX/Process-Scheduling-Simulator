@@ -28,14 +28,16 @@
                 <label for="sjf">Shortest Job First</label><br>
                 <input type="radio" id="rr" name="scheduling" value="rr">
                 <label for="rr">Round Robin</label><br>
-                <div id="timeQuantumDiv" style="display: none;">
-                    <label for="timeQuantum">Time Quantum:</label>
-                    <input type="number" id="timeQuantum" name="timeQuantum" min="1">
-                </div>
+                
                 <input type="radio" id="priority" name="scheduling" value="priority">
                 <label for="priority">Priority Scheduling</label>
             </section>
         </form>
+
+        <div id="timeQuantumDiv" style="display: none;">
+            <label for="timeQuantum">Time Quantum:</label>
+            <input type="number" id="timeQuantum" name="timeQuantum" min="1" placeholder="Time Quantum">
+        </div>
 
         <section>
             <div class="gantt-chart"></div>

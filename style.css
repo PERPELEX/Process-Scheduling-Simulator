@@ -39,7 +39,7 @@ main{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 10% 0 5% 0; 
+    margin: 5% 0 5% 0; 
 }
 
 .title h1 {
@@ -67,16 +67,16 @@ form{
 }
 
 .file-section{
-    width: 30%;
+    width: 25%;
     height: auto;
-    padding: 0 2.5%;
+    margin: 0 0 0 10%;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
 
-.file-section label:nth-of-type(1){
+.file-section label{
     display: none;
 }
 
@@ -89,6 +89,8 @@ form{
     font-family: 'Poppins', sans-serif;
     background: rgba(42, 78, 42, 0.4);
     border: 1px solid rgba(42, 78, 42, 0.5); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .file::file-selector-button {
@@ -113,26 +115,17 @@ form{
     background: #3b9867; /* Slightly more opaque green on hover */
 }
 
-/* .radio-section{
-    width: 70%;
-    height: auto;
-    padding: 0 2.5%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-} */
-
 .radio-section {
     display: flex;
     align-items: center;
-    background: rgba(42, 78, 42, 0.4);
+    background: rgba(42, 78, 42, 0.2);
     border-radius: 25px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(42, 78, 42, 0.5); 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    margin: 0 10% 0 0;
 }
 
 .radio-section input[type="radio"] {
@@ -143,7 +136,7 @@ form{
     padding: 10px 20px;
     cursor: pointer;
     color: white;
-    background: rgba(42, 78, 42, 0.4);
+    background: rgba(42, 78, 42, 0.2);
     transition: background 0.3s, color 0.3s;
 }
 
@@ -163,17 +156,71 @@ form{
 }
 
 .radio-section input[type="radio"]:hover + label {
-    background: #3b9867;
+    background: #1e653f;
 }
 
 .radio-section label:hover {
-    background: #3b9867;
+    background: #1e653f;
 }
 
+#timeQuantumDiv {
+    display: none;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 3% 0;
+}
+
+#timeQuantumDiv label{
+    display: none;
+}
+
+#timeQuantumDiv input[type="number"] {
+    width: 25%;
+    height: 40px;
+    margin: 0 0 0 10%;
+    border-radius: 25px;
+    padding: 10px 20px;
+    outline: none;
+    appearance: none;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    background: rgba(42, 78, 42, 0.4);
+    border: 1px solid rgba(42, 78, 42, 0.5); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+#timeQuantumDiv input[type="number"]::placeholder {
+    color: #bcbcbc;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 
 .gantt-chart, .time-chart, .process-data {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    margin-top: 5%;
 }
 .process {
     text-align: center;
