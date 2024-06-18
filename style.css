@@ -24,11 +24,11 @@ main{
 }
 
 .glassy-shape {
-    background: rgba(250,250,250, 0.1 );
+    background: rgba(255, 255, 255, 0.05); /* Slightly transparent white background */
     border-radius: 15px; /* Rounded corners */
-    backdrop-filter: blur(10px); /* Blurred background */
-    -webkit-backdrop-filter: blur(10px); /* Safari support */
-    border: 1px solid rgba(250,250,250, 0.1 ); /* Subtle green border */
+    backdrop-filter: blur(4px); /* Blurred background */
+    -webkit-backdrop-filter: blur(4px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
@@ -39,7 +39,7 @@ main{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 5% 0 5% 0; 
+    margin: 3% 0;
 }
 
 .title h1 {
@@ -171,7 +171,7 @@ form{
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin: 3% 0;
+    margin: 3% 0 0 0;
 }
 
 #timeQuantumDiv label{
@@ -213,19 +213,49 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.gantt-chart, .time-chart, .process-data {
+.container {
+    background: linear-gradient(135deg, #1e653f, #3b9867);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin-top: 3%;
+    width: 80%;
+}
+
+.gantt-chart,.time-chart, .process-data {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: auto;
-    margin-top: 5%;
+}   
+
+.gantt-chart {
+    background-color: #3b9867;
+    border-radius: 20px;
+    padding: 20px 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
+
 .process {
     text-align: center;
     margin: 2px;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-.time-chart div, .process-data div {
-    margin: 2px;
+
+.process-data{
+    justify-content: space-between;
+}
+
+.process-data div {
+    margin: 2% 0 0 0;
+    padding: 0 2% 0 0;
+    text-align: center;
+    border-right: 3px solid #113d26;
+}
+
+.process-data div:last-child {
+    border-right: none;
 }

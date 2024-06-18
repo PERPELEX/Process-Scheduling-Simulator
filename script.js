@@ -86,11 +86,11 @@ timeQuantumInput.addEventListener('input', function() {
     for(let i=0; i<stepsArr.length; i++){
         let div = document.createElement('div');
         div.classList.add('process');
-        div.style.width = `${stepsArr[i].stepTime*20}px`;
+        div.style.width = `${stepsArr[i].stepTime*40}px`;
         div.style.height = '50px';
         let color;
         do {
-            color = `rgb(${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)})`;
+            color = `rgb(${Math.floor(Math.random()*128)},${Math.floor(Math.random()*64)},${Math.floor(Math.random()*128)})`;
         } while (usedColors.includes(color));
         usedColors.push(color);
         div.style.backgroundColor = color;
@@ -109,7 +109,7 @@ timeQuantumInput.addEventListener('input', function() {
 
         // Render waiting and turnaround time for each process
         let dataDiv = document.createElement('div');
-        dataDiv.innerHTML = `P${stepsArr[i].processId} - Waiting Time: ${waitingTime}, Turnaround Time: ${turnaroundTime}`;
+        dataDiv.innerHTML = `P${stepsArr[i].processId}<br>W.Time: ${waitingTime}<br> T.Time: ${turnaroundTime}`;
         dataContainer.appendChild(dataDiv);
     }
 
@@ -117,7 +117,7 @@ timeQuantumInput.addEventListener('input', function() {
     let avgWaitingTime = totalWaitingTime / stepsArr.length;
     let avgTurnaroundTime = totalTurnaroundTime / stepsArr.length;
     let avgDataDiv = document.createElement('div');
-    avgDataDiv.innerHTML = `Average Waiting Time: ${avgWaitingTime.toFixed(2)}, Average Turnaround Time: ${avgTurnaroundTime.toFixed(2)}`;
+    avgDataDiv.innerHTML = `Average<br>W.Time: ${avgWaitingTime.toFixed(2)}<br> T.Time: ${avgTurnaroundTime.toFixed(2)}`;
     dataContainer.appendChild(avgDataDiv);
 }
 
