@@ -229,16 +229,25 @@ input[type="number"] {
     align-items: center;
     width: 100%;
     height: auto;
+    overflow-x: scroll;
 }   
 
+.gantt-chart::-webkit-scrollbar, 
+.time-chart::-webkit-scrollbar, 
+.process-data::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
 .gantt-chart {
-    background-color: #3b9867;
+    justify-content: flex-start;
+    background: linear-gradient(135deg, #237248, #3b9867);
     border-radius: 20px;
     padding: 20px 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .process {
+    flex-shrink: 0;
     text-align: center;
     margin: 2px;
     border-radius: 2px;

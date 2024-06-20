@@ -63,7 +63,7 @@ timeQuantumInput.addEventListener('input', function() {
             break;
         case 'rr':
             const timeQuantumInput = document.getElementById('timeQuantum').value;
-            const timeQuantum = timeQuantumInput ? Number(timeQuantumInput) : 10;
+            const timeQuantum = timeQuantumInput ? (Number(timeQuantumInput))>0 ? Number(timeQuantumInput) : 1 : 10;
             result = rr(data, timeQuantum);
             break;
         case 'priority':
@@ -83,10 +83,15 @@ timeQuantumInput.addEventListener('input', function() {
     startTimeDiv.innerHTML = `<p>0</p>`;
     timeContainer.appendChild(startTimeDiv);
 
+    let completedProcesses = new Set();
     for(let i=0; i<stepsArr.length; i++){
         let div = document.createElement('div');
         div.classList.add('process');
-        div.style.width = `${stepsArr[i].stepTime*40}px`;
+        let stepTime = stepsArr[i].stepTime;
+        let baseWidth = 30; // Base width for the div
+        let scaleFactor = 55; // Scale factor for the logarithmic function
+        let multiplier = Math.log(stepTime + 1) * scaleFactor; // Use log(stepTime + 1) to avoid log(0)
+        div.style.width = `${baseWidth + multiplier}px`;
         div.style.height = '50px';
         let color;
         do {
@@ -101,18 +106,32 @@ timeQuantumInput.addEventListener('input', function() {
         timeDiv.innerHTML = `<p>${result.stepsArr[i].elapsedTime}</p>`;
         timeContainer.appendChild(timeDiv);
 
-        // Calculate waiting and turnaround time for each process
-        let waitingTime = result.processInfo[stepsArr[i].processId].waitingTime;
-        let turnaroundTime = result.processInfo[stepsArr[i].processId].turnaroundTime;
+        let processId = stepsArr[i].processId; // Corrected line
+        if (completedProcesses.has(processId)) {
+            continue;
+        }
+        let process = result.processInfo[processId];
+    
+        // Calculate waiting time and turnaround time
+        let waitingTime = process.arrivalTime + process.waitingTime;
+        let turnaroundTime = waitingTime + process.burstTime;
+    
+        // Update the process info with the calculated values
+        process.waitingTime = waitingTime;
+        process.turnaroundTime = turnaroundTime;
+    
+        // Add to total waiting and turnaround time
         totalWaitingTime += waitingTime;
         totalTurnaroundTime += turnaroundTime;
-
+    
         // Render waiting and turnaround time for each process
         let dataDiv = document.createElement('div');
-        dataDiv.innerHTML = `P${stepsArr[i].processId}<br>W.Time: ${waitingTime}<br> T.Time: ${turnaroundTime}`;
+        dataDiv.innerHTML = `P${processId}<br>W.Time: ${waitingTime}<br> T.Time: ${turnaroundTime}`;
         dataContainer.appendChild(dataDiv);
-    }
 
+        completedProcesses.add(processId);
+    }
+    
     // Calculate and render average waiting and turnaround time
     let avgWaitingTime = totalWaitingTime / stepsArr.length;
     let avgTurnaroundTime = totalTurnaroundTime / stepsArr.length;
