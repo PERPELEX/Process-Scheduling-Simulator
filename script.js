@@ -1,5 +1,5 @@
 const ganttContainer=document.querySelector('.gantt-chart');
-const timeContainer=document.querySelector('.time-chart');
+// const timeContainer=document.querySelector('.time-chart');
 const dataContainer=document.querySelector('.process-data');
 const file=document.getElementById('fileUpload');
 const schedulingButtons = document.querySelectorAll('input[name="scheduling"]');
@@ -33,7 +33,7 @@ file.addEventListener('change', function(){
 schedulingButtons.forEach(button => {
     button.addEventListener('change', function() {
         ganttContainer.innerHTML = ''; // Clear the chart container
-        timeContainer.innerHTML = ''; // Clear the chart container
+        // timeContainer.innerHTML = ''; // Clear the chart container
         dataContainer.innerHTML = ''; // Clear the chart container
         const dataCopy = JSON.parse(JSON.stringify(globalData)); // Create a deep copy of the data
         renderGanttChart(dataCopy);
@@ -43,7 +43,7 @@ schedulingButtons.forEach(button => {
 // Add an event listener to the time quantum input field
 timeQuantumInput.addEventListener('input', function() {
     ganttContainer.innerHTML = ''; // Clear the chart container
-    timeContainer.innerHTML = ''; // Clear the chart container
+    // timeContainer.innerHTML = ''; // Clear the chart container
     dataContainer.innerHTML = ''; // Clear the chart container
     const dataCopy = JSON.parse(JSON.stringify(globalData)); // Create a deep copy of the data
     renderGanttChart(dataCopy);
@@ -79,10 +79,6 @@ timeQuantumInput.addEventListener('input', function() {
     let totalWaitingTime = 0;
     let totalTurnaroundTime = 0;
 
-    let startTimeDiv = document.createElement('div');
-    startTimeDiv.innerHTML = `<p>0</p>`;
-    timeContainer.appendChild(startTimeDiv);
-
     let completedProcesses = new Set();
     for(let i=0; i<stepsArr.length; i++){
         let div = document.createElement('div');
@@ -104,7 +100,7 @@ timeQuantumInput.addEventListener('input', function() {
 
         let timeDiv = document.createElement('div');
         timeDiv.innerHTML = `<p>${result.stepsArr[i].elapsedTime}</p>`;
-        timeContainer.appendChild(timeDiv);
+        div.appendChild(timeDiv);
 
         let processId = stepsArr[i].processId; // Corrected line
         if (completedProcesses.has(processId)) {

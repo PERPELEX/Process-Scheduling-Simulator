@@ -8,7 +8,7 @@ body {
     font-family: 'Poppins', sans-serif;
     background-color: #111;
     color: #fafafa;
-    background-image: url("./backdrop5.jpeg");
+    background-image: url("./backdrop.jpeg");
     background-size:cover;
     width: 100%;
     height: auto;
@@ -254,6 +254,24 @@ input[type="number"] {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.process:nth-of-type(1) div::before{
+    content: '0';
+}
+
+.process div{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 2%;
+    padding: 0 4% ;
+    font-size: 0.8rem;
+}
+
+.process:nth-of-type(1) div{
+    justify-content: space-between;
+}
 .process-data{
     justify-content: space-between;
 }
