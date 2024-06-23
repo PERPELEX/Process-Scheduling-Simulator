@@ -1,3 +1,28 @@
+// data being returned
+// {
+//     "stepsArr": [
+//         {
+//             "processId": <String>, // ID of the process
+//             "elapsedTime": <Number>, // Total time elapsed after this process step
+//             "stepTime": <Number> // Time taken by this process step
+//         },
+//         ...
+//     ],
+//     "processInfo": {
+//         <processId>: {
+//             "processId": <String>, // ID of the process
+//             "arrivalTime": <Number>, // Time when the process arrived
+//             "burstTime": <Number>, // Total execution time required by the process
+//             "remainingTime": <Number>, // Remaining execution time for the process
+//             "waitingTime": <Number>, // Total time the process has been waiting in the queue
+//             "turnaroundTime": <Number>, // Total time from arrival to completion of the process
+//             "elapsedTime": <Number> // Total time elapsed after this process completed
+//         },
+//         ...
+//     }
+// }
+
+
 const ganttContainer=document.querySelector('.gantt-chart');
 // const timeContainer=document.querySelector('.time-chart');
 const dataContainer=document.querySelector('.process-data');
@@ -27,6 +52,32 @@ file.addEventListener('change', function(){
     }
     reader.readAsText(this.files[0]);
 });
+
+const title_button=document.querySelector('.title-button');
+title_button.addEventListener('click',function(){
+    ganttContainer.innerHTML = ''; // Clear the chart container
+    // timeContainer.innerHTML = ''; // Clear the chart container
+    dataContainer.innerHTML = ''; // Clear the chart container
+    fetch('./default-input.txt') // Specify the correct path to your default file
+        .then(response => response.text())
+        .then(text => {
+            const lines = text.split('\n');
+            const data = lines.map(line => line.split(' ').map(Number));
+
+            // Validate data format
+            const columnCount = data[0].length;
+            if (columnCount < 3 || columnCount > 4 || data.some(row => row.length !== columnCount)) {
+                alert("Invalid data format. All lines should contain the same number of columns, either three or four.");
+                return;
+            }
+
+            console.log(data);
+            globalData = data; // Store the data globally
+            renderGanttChart(data);
+        })
+        .catch(error => console.error('Error loading the default file:', error));
+    console.log('clicked');
+})
 
 
 // Add event listeners to the radio buttons
@@ -84,8 +135,15 @@ timeQuantumInput.addEventListener('input', function() {
         let div = document.createElement('div');
         div.classList.add('process');
         let stepTime = stepsArr[i].stepTime;
-        let baseWidth = 30; // Base width for the div
-        let scaleFactor = 55; // Scale factor for the logarithmic function
+        let screenWidth = window.innerWidth;
+        let baseWidth, scaleFactor;
+        if(screenWidth <= 480) { // Mobile
+            baseWidth = 10; // Smaller base width for mobile
+            scaleFactor = 25; // Smaller scale factor for mobile
+        }else { // Desktop and larger screens
+            baseWidth = 30; // Original base width for desktop
+            scaleFactor = 55; // Original scale factor for desktop
+        }
         let multiplier = Math.log(stepTime + 1) * scaleFactor; // Use log(stepTime + 1) to avoid log(0)
         div.style.width = `${baseWidth + multiplier}px`;
         div.style.height = '50px';
@@ -129,8 +187,9 @@ timeQuantumInput.addEventListener('input', function() {
     }
     
     // Calculate and render average waiting and turnaround time
-    let avgWaitingTime = totalWaitingTime / stepsArr.length;
-    let avgTurnaroundTime = totalTurnaroundTime / stepsArr.length;
+    // Calculate and render average waiting and turnaround time
+    let avgWaitingTime = totalWaitingTime / completedProcesses.size;
+    let avgTurnaroundTime = totalTurnaroundTime / completedProcesses.size;
     let avgDataDiv = document.createElement('div');
     avgDataDiv.innerHTML = `Average<br>W.Time: ${avgWaitingTime.toFixed(2)}<br> T.Time: ${avgTurnaroundTime.toFixed(2)}`;
     dataContainer.appendChild(avgDataDiv);
