@@ -28,6 +28,9 @@ main{
     border: none;
     margin: 6% 0;
     cursor: pointer;
+    width: auto;
+    
+    
 }
 
 .glassy-shape {
@@ -40,6 +43,8 @@ main{
 }
 
 .title{
+    position: relative;
+    left: -7.5%;
     width: calc(100% + 15%);
     height: auto;
     display: flex;
@@ -304,7 +309,7 @@ input[type="number"] {
     }
 
     .title-button{
-        margin: 20% 0 7.5% 0;
+        margin: 35% 0 7.5% 0;
     }
 
     form{
