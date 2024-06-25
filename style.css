@@ -74,7 +74,7 @@ form{
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    
+    font-size: .9rem;
 }
 
 .file-section{
@@ -96,7 +96,7 @@ form{
     height: auto;
     outline: none;
     appearance: none;
-    font-size: 1rem;
+    font-size: .9rem;
     font-family: 'Poppins', sans-serif;
     background: rgba(42, 78, 42, 0.4);
     border: 1px solid rgba(42, 78, 42, 0.5); 
@@ -314,6 +314,11 @@ input[type="number"] {
 
     form{
         flex-direction: column;
+        font-size: .7rem;
+    }
+
+    .file{
+        font-size: .7rem;
     }
 
     .file-section{

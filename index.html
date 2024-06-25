@@ -41,9 +41,10 @@ Bugs:
                 <label for="sjf">Shortest Job First</label><br>
                 <input type="radio" id="rr" name="scheduling" value="rr">
                 <label for="rr">Round Robin</label><br>
-                
                 <input type="radio" id="priority" name="scheduling" value="priority">
                 <label for="priority">Priority Scheduling</label>
+                <input type="radio" id="multi" name="scheduling" value="multi">
+                <label for="multi">Multi Level</label>
             </section>
         </form>
 
@@ -63,8 +64,12 @@ Bugs:
     <script src="./script.js"></script>
     <script>
         document.querySelectorAll('input[name="scheduling"]').forEach((elem) => {
-            elem.addEventListener("change", function(event) {
-                document.getElementById('timeQuantumDiv').style.display = event.target.value == 'rr' ? 'block' : 'none';
+            elem.addEventListener('change', function() {
+                if (this.value === 'rr' || this.value === 'multi') {
+                    document.getElementById('timeQuantumDiv').style.display = 'block';
+                } else {
+                    document.getElementById('timeQuantumDiv').style.display = 'none';
+                }
             });
         });
     </script>
