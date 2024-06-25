@@ -147,7 +147,7 @@ form{
     padding: 10px 20px;
     cursor: pointer;
     color: white;
-    /* background: rgba(42, 78, 42, 0.2); */
+    background: rgba(42, 78, 42, 0.2);
     height: auto;
     transition: background 0.3s, color 0.3s;
 }
@@ -327,10 +327,10 @@ input[type="number"] {
         width: 95%;
     }
 
-    /* .radio-section label {
-        min-height: 62px;
+    .radio-section label {
+        min-height: 50px;
         max-height: auto;
-    } */
+    }
 
     #timeQuantumDiv{
         margin: 5% 0;
