@@ -101,7 +101,7 @@ timeQuantumInput.addEventListener('input', function() {
 });
 
 
-  function renderGanttChart(data){
+function renderGanttChart(data){
     let result;
     const selectedScheduling = document.querySelector('input[name="scheduling"]:checked').value;
 
@@ -114,7 +114,7 @@ timeQuantumInput.addEventListener('input', function() {
             break;
         case 'rr':
             const timeQuantumInput = document.getElementById('timeQuantum').value;
-            const timeQuantum = timeQuantumInput ? (Number(timeQuantumInput))>0 ? Number(timeQuantumInput) : 1 : 10;
+            const timeQuantum = timeQuantumInput ? (Number(timeQuantumInput)) > 0 ? Number(timeQuantumInput) : 1 : 10;
             result = rr(data, timeQuantum);
             break;
         case 'priority':
@@ -129,55 +129,69 @@ timeQuantumInput.addEventListener('input', function() {
     let usedColors = [];
     let totalWaitingTime = 0;
     let totalTurnaroundTime = 0;
-
     let completedProcesses = new Set();
-    for(let i=0; i<stepsArr.length; i++){
+
+    for(let i = 0; i < stepsArr.length; i++){
         let div = document.createElement('div');
         div.classList.add('process');
         let stepTime = stepsArr[i].stepTime;
         let screenWidth = window.innerWidth;
         let baseWidth, scaleFactor;
+
         if(screenWidth <= 480) { // Mobile
             baseWidth = 10; // Smaller base width for mobile
             scaleFactor = 25; // Smaller scale factor for mobile
-        }else { // Desktop and larger screens
+        } else { // Desktop and larger screens
             baseWidth = 30; // Original base width for desktop
             scaleFactor = 55; // Original scale factor for desktop
         }
+
         let multiplier = Math.log(stepTime + 1) * scaleFactor; // Use log(stepTime + 1) to avoid log(0)
         div.style.width = `${baseWidth + multiplier}px`;
         div.style.height = '50px';
+
         let color;
         do {
-            color = `rgb(${Math.floor(Math.random()*128)},${Math.floor(Math.random()*64)},${Math.floor(Math.random()*128)})`;
+            color = `rgb(${Math.floor(Math.random() * 128)}, ${Math.floor(Math.random() * 64)}, ${Math.floor(Math.random() * 128)})`;
         } while (usedColors.includes(color));
         usedColors.push(color);
         div.style.backgroundColor = color;
-        div.innerHTML = `<p>P${stepsArr[i].processId}`;
+
+        if (stepsArr[i].processId === 'Idle Time') {
+            div.innerHTML = `<p>Idle</p>`;
+        } else {
+            div.innerHTML = `<p>P${stepsArr[i].processId}</p>`;
+        }
+
         ganttContainer.appendChild(div);
 
         let timeDiv = document.createElement('div');
         timeDiv.innerHTML = `<p>${result.stepsArr[i].elapsedTime}</p>`;
         div.appendChild(timeDiv);
 
-        let processId = stepsArr[i].processId; // Corrected line
+        let processId = stepsArr[i].processId;
+        if (processId === 'Idle Time') {
+            continue;
+        }
+
         if (completedProcesses.has(processId)) {
             continue;
         }
+
         let process = result.processInfo[processId];
-    
+
         // Calculate waiting time and turnaround time
         let waitingTime = process.arrivalTime + process.waitingTime;
         let turnaroundTime = waitingTime + process.burstTime;
-    
+
         // Update the process info with the calculated values
         process.waitingTime = waitingTime;
         process.turnaroundTime = turnaroundTime;
-    
+
         // Add to total waiting and turnaround time
         totalWaitingTime += waitingTime;
         totalTurnaroundTime += turnaroundTime;
-    
+
         // Render waiting and turnaround time for each process
         let dataDiv = document.createElement('div');
         dataDiv.innerHTML = `P${processId}<br>W.Time: ${waitingTime}<br> T.Time: ${turnaroundTime}`;
@@ -185,8 +199,7 @@ timeQuantumInput.addEventListener('input', function() {
 
         completedProcesses.add(processId);
     }
-    
-    // Calculate and render average waiting and turnaround time
+
     // Calculate and render average waiting and turnaround time
     let avgWaitingTime = totalWaitingTime / completedProcesses.size;
     let avgTurnaroundTime = totalTurnaroundTime / completedProcesses.size;
@@ -195,18 +208,30 @@ timeQuantumInput.addEventListener('input', function() {
     dataContainer.appendChild(avgDataDiv);
 }
 
+
 function fcfs(data){
     let stepsArr = [];
-    let processInfo={};
+    let processInfo = {};
     let elapsedTime = 0;
 
     // Sort the data array based on arrival time
     data.sort((a, b) => a[1] - b[1]);
 
-    for(let i=0; i<data.length; i++){
+    for(let i = 0; i < data.length; i++){
         let processId = data[i][0];
         let arrivalTime = data[i][1];
         let burstTime = data[i][2];
+
+        // Check for idle time
+        if (arrivalTime > elapsedTime) {
+            let idleTime = arrivalTime - elapsedTime;
+            stepsArr.push({
+                processId: 'Idle Time',
+                elapsedTime: arrivalTime,
+                stepTime: idleTime
+            });
+            elapsedTime = arrivalTime;
+        }
 
         // Waiting time is total time till now minus the arrival time of the process
         let waitingTime = Math.max(0, elapsedTime - arrivalTime);
@@ -239,30 +264,33 @@ function fcfs(data){
     };
 }
 
+
 function sjf(data) {
     let stepsArr = [];
     let processInfo = {};
-    let waitingTime = 0;
-    let turnaroundTime = 0;
     let elapsedTime = 0;
 
     // Sort the data array based on arrival time and then burst time
     data.sort((a, b) => a[1] - b[1] || a[2] - b[2]);
 
-    for(let i=0; i<data.length; i++){
+    for (let i = 0; i < data.length; i++) {
         let processId = data[i][0];
         let arrivalTime = data[i][1];
         let burstTime = data[i][2];
 
-        // If the process has not arrived yet, skip to the next iteration
-        if(arrivalTime > elapsedTime){
-            i--;
-            elapsedTime++;
-            continue;
+        // If the process has not arrived yet, we need to handle idle time
+        if (arrivalTime > elapsedTime) {
+            let idleTime = arrivalTime - elapsedTime;
+            stepsArr.push({
+                processId: 'Idle Time',
+                elapsedTime: elapsedTime + idleTime,
+                stepTime: idleTime
+            });
+            elapsedTime += idleTime;
         }
 
-        waitingTime = elapsedTime - arrivalTime;
-        turnaroundTime = waitingTime + burstTime;
+        let waitingTime = elapsedTime - arrivalTime;
+        let turnaroundTime = waitingTime + burstTime;
 
         elapsedTime += burstTime;
 
@@ -290,11 +318,11 @@ function sjf(data) {
     };
 }
 
+
 function rr(data, quantum) {
     let stepsArr = [];
     let processInfo = {};
     let elapsedTime = 0;
-    let endTime = 0;
 
     data.sort((a, b) => a[1] - b[1]);
 
@@ -309,7 +337,7 @@ function rr(data, quantum) {
     }));
 
     let queue = [];
-    let roundQueue = []; // Queue to hold processes that have been executed in the current round
+    let roundQueue = [];
 
     while (processes.length > 0 || queue.length > 0 || roundQueue.length > 0) {
         while (processes.length > 0 && processes[0].arrivalTime <= elapsedTime) {
@@ -322,7 +350,18 @@ function rr(data, quantum) {
         }
 
         if (queue.length === 0) {
-            elapsedTime++;
+            if (processes.length > 0) {
+                let nextArrivalTime = processes[0].arrivalTime;
+                let idleTime = nextArrivalTime - elapsedTime;
+                stepsArr.push({
+                    processId: 'Idle Time',
+                    elapsedTime: elapsedTime + idleTime,
+                    stepTime: idleTime
+                });
+                elapsedTime = nextArrivalTime;
+            } else {
+                elapsedTime++;
+            }
             continue;
         }
 
@@ -339,7 +378,7 @@ function rr(data, quantum) {
         } else {
             elapsedTime += quantum;
             process.remainingTime -= quantum;
-            roundQueue.push(process); // Push the process to the round queue instead of the main queue
+            roundQueue.push(process);
         }
 
         stepsArr.push({
@@ -357,38 +396,58 @@ function rr(data, quantum) {
     };
 }
 
+
 function ps(data) {
     let stepsArr = [];
     let processInfo = {};
     let elapsedTime = 0;
 
-    // Sort the data array based on arrival time and then priority
-    data.sort((a, b) => a[1] - b[1] || a[3] - b[3]);
+    // Sort the data array based on arrival time
+    data.sort((a, b) => a[1] - b[1]);
 
-    for(let i=0; i<data.length; i++){
-        let processId = data[i][0];
-        let arrivalTime = data[i][1];
-        let burstTime = data[i][2];
-        let priority = data[i][3];
+    while (data.length > 0) {
+        // Filter processes that have arrived by the current elapsedTime
+        let availableProcesses = data.filter(process => process[1] <= elapsedTime);
 
-        // If the process has not arrived yet, skip to the next iteration
-        if(arrivalTime > elapsedTime){
-            i--;
-            elapsedTime++;
+        if (availableProcesses.length === 0) {
+            // If no process has arrived, increment elapsedTime and add idle time step
+            let nextArrivalTime = data[0][1];
+            let idleTime = nextArrivalTime - elapsedTime;
+
+            stepsArr.push({
+                processId: 'Idle Time',
+                elapsedTime: elapsedTime + idleTime,
+                stepTime: idleTime
+            });
+
+            elapsedTime = nextArrivalTime;
             continue;
         }
 
+        // Sort the available processes by priority (lower number = higher priority)
+        availableProcesses.sort((a, b) => a[3] - b[3]);
+
+        // Select the process with the highest priority
+        let nextProcess = availableProcesses[0];
+
+        // Extract process details
+        let [processId, arrivalTime, burstTime, priority] = nextProcess;
+
+        // Calculate waiting and turnaround times
         let waitingTime = elapsedTime - arrivalTime;
         let turnaroundTime = waitingTime + burstTime;
 
+        // Update elapsedTime
         elapsedTime += burstTime;
 
+        // Add process execution step to stepsArr
         stepsArr.push({
             processId: processId,
             elapsedTime: elapsedTime,
             stepTime: burstTime
         });
 
+        // Update processInfo
         processInfo[processId] = {
             processId: processId,
             arrivalTime: arrivalTime,
@@ -398,6 +457,9 @@ function ps(data) {
             elapsedTime: elapsedTime,
             priority: priority
         };
+
+        // Remove the executed process from the data array
+        data = data.filter(process => process[0] !== processId);
     }
 
     console.log(stepsArr);
