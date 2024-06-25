@@ -327,10 +327,10 @@ input[type="number"] {
         width: 95%;
     }
 
-    .radio-section label {
+    /* .radio-section label {
         min-height: 62px;
         max-height: auto;
-    }
+    } */
 
     #timeQuantumDiv{
         margin: 5% 0;
