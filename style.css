@@ -74,13 +74,13 @@ form{
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    font-size: .9rem;
+    font-size: 1rem;
 }
 
 .file-section{
     width: 25%;
     height: auto;
-    margin: 0 0 0 10%;
+    margin: 0 0 0 7.5%;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -96,7 +96,7 @@ form{
     height: auto;
     outline: none;
     appearance: none;
-    font-size: .9rem;
+    font-size: 1rem;
     font-family: 'Poppins', sans-serif;
     background: rgba(42, 78, 42, 0.4);
     border: 1px solid rgba(42, 78, 42, 0.5); 
@@ -136,7 +136,7 @@ form{
     border: 1px solid rgba(42, 78, 42, 0.5); 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    margin: 0 10% 0 0;
+    margin: 0 7.5% 0 0;
 }
 
 .radio-section input[type="radio"] {
@@ -147,7 +147,8 @@ form{
     padding: 10px 20px;
     cursor: pointer;
     color: white;
-    background: rgba(42, 78, 42, 0.2);
+    /* background: rgba(42, 78, 42, 0.2); */
+    height: auto;
     transition: background 0.3s, color 0.3s;
 }
 
@@ -230,7 +231,7 @@ input[type="number"] {
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     margin-top: 3%;
-    width: 80%;
+    width: 85%;
 }
 
 .gantt-chart,.time-chart, .process-data {
@@ -314,11 +315,6 @@ input[type="number"] {
 
     form{
         flex-direction: column;
-        font-size: .7rem;
-    }
-
-    .file{
-        font-size: .7rem;
     }
 
     .file-section{
@@ -329,6 +325,11 @@ input[type="number"] {
     .radio-section{
         margin: 5% 2.5%;
         width: 95%;
+    }
+
+    .radio-section label {
+        min-height: 62px;
+        max-height: auto;
     }
 
     #timeQuantumDiv{

@@ -121,7 +121,9 @@ function renderGanttChart(data){
             result = ps(data);
             break;
         case 'multi':
-        result = ps(data);
+            const timeQuantumInput2 = document.getElementById('timeQuantum').value;
+            const timeQuantum2 = timeQuantumInput2 ? (Number(timeQuantumInput2)) > 0 ? Number(timeQuantumInput2) : 1 : 10;
+            result = multiLevelQueue(data, timeQuantum2);
         break;
         default:
             alert('Please select a scheduling algorithm.');
@@ -481,7 +483,7 @@ function multiLevelQueue(data, rrQuantum) {
     // Separate processes into different priority levels
     let highPriorityQueue = data.filter(process => process[3] === 1);
     let mediumPriorityQueue = data.filter(process => process[3] === 2);
-    let lowPriorityQueue = data.filter(process => process[3] === 3);
+    let lowPriorityQueue = data.filter(process => process[3] > 2);
 
     // Sort queues based on arrival time
     highPriorityQueue.sort((a, b) => a[1] - b[1]);
@@ -499,6 +501,11 @@ function multiLevelQueue(data, rrQuantum) {
             }
 
             if (roundQueue.length === 0) {
+                stepsArr.push({
+                    processId: 'Idle Time',
+                    elapsedTime: elapsedTime + 1,
+                    stepTime: 1
+                });
                 elapsedTime++;
                 continue;
             }
