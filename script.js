@@ -278,24 +278,32 @@ function sjf(data) {
     let processInfo = {};
     let elapsedTime = 0;
 
-    // Sort the data array based on arrival time and then burst time
-    data.sort((a, b) => a[1] - b[1] || a[2] - b[2]);
+    // Sort the data array based on arrival time
+    data.sort((a, b) => a[1] - b[1]);
 
-    for (let i = 0; i < data.length; i++) {
-        let processId = data[i][0];
-        let arrivalTime = data[i][1];
-        let burstTime = data[i][2];
+    while (data.length > 0) {
+        // Filter processes that have arrived by the current elapsedTime
+        let availableProcesses = data.filter(process => process[1] <= elapsedTime);
 
-        // If the process has not arrived yet, we need to handle idle time
-        if (arrivalTime > elapsedTime) {
-            let idleTime = arrivalTime - elapsedTime;
+        if (availableProcesses.length === 0) {
+            // If no process has arrived, increment elapsedTime and continue
+            let nextArrivalTime = data[0][1];
+            let idleTime = nextArrivalTime - elapsedTime;
             stepsArr.push({
                 processId: 'Idle Time',
                 elapsedTime: elapsedTime + idleTime,
                 stepTime: idleTime
             });
-            elapsedTime += idleTime;
+            elapsedTime = nextArrivalTime;
+            continue;
         }
+
+        // Sort the available processes by burst time (Shortest Job First)
+        availableProcesses.sort((a, b) => a[2] - b[2]);
+
+        // Select the process with the shortest burst time
+        let nextProcess = availableProcesses[0];
+        let [processId, arrivalTime, burstTime] = nextProcess;
 
         let waitingTime = elapsedTime - arrivalTime;
         let turnaroundTime = waitingTime + burstTime;
@@ -316,6 +324,9 @@ function sjf(data) {
             turnaroundTime: turnaroundTime,
             elapsedTime: elapsedTime
         };
+
+        // Remove the executed process from the data array
+        data = data.filter(process => process[0] !== processId);
     }
 
     console.log(stepsArr);
@@ -325,6 +336,7 @@ function sjf(data) {
         processInfo: processInfo
     };
 }
+
 
 
 function rr(data, quantum) {
