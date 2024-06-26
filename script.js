@@ -34,6 +34,9 @@ const timeQuantumInput = document.getElementById('timeQuantum');
 let globalData;
 
 file.addEventListener('change', function(){
+    ganttContainer.innerHTML = ''; // Clear the chart container
+    // timeContainer.innerHTML = ''; // Clear the chart container
+    dataContainer.innerHTML = ''; // Clear the chart container
     const reader = new FileReader();
     reader.onload = function(e){
         const lines = e.target.result.split('\n');
@@ -490,23 +493,23 @@ function multiLevelQueue(data, rrQuantum) {
     mediumPriorityQueue.sort((a, b) => a[1] - b[1]);
     lowPriorityQueue.sort((a, b) => a[1] - b[1]);
 
-    function processRR(queue, quantum) {
-        let stepsArr = [];
-        let elapsedTime = 0;
+    function processRR(queue, quantum, initialElapsedTime) {
+        let localStepsArr = [];
+        let localElapsedTime = initialElapsedTime;
         let roundQueue = [];
 
         while (queue.length > 0 || roundQueue.length > 0) {
-            while (queue.length > 0 && queue[0][1] <= elapsedTime) {
+            while (queue.length > 0 && queue[0][1] <= localElapsedTime) {
                 roundQueue.push(queue.shift());
             }
 
             if (roundQueue.length === 0) {
-                stepsArr.push({
+                localStepsArr.push({
                     processId: 'Idle Time',
-                    elapsedTime: elapsedTime + 1,
+                    elapsedTime: localElapsedTime + 1,
                     stepTime: 1
                 });
-                elapsedTime++;
+                localElapsedTime++;
                 continue;
             }
 
@@ -515,65 +518,65 @@ function multiLevelQueue(data, rrQuantum) {
             let remainingTime = burstTime - (processInfo[processId]?.elapsedTime || 0);
 
             if (remainingTime <= quantum) {
-                elapsedTime += remainingTime;
+                localElapsedTime += remainingTime;
                 processInfo[processId] = {
                     processId: processId,
                     arrivalTime: arrivalTime,
                     burstTime: burstTime,
-                    waitingTime: elapsedTime - arrivalTime - burstTime,
-                    turnaroundTime: elapsedTime - arrivalTime,
-                    elapsedTime: elapsedTime
+                    waitingTime: localElapsedTime - arrivalTime - burstTime,
+                    turnaroundTime: localElapsedTime - arrivalTime,
+                    elapsedTime: localElapsedTime
                 };
             } else {
-                elapsedTime += quantum;
+                localElapsedTime += quantum;
                 remainingTime -= quantum;
                 roundQueue.push([processId, arrivalTime, remainingTime, priority]);
             }
 
-            stepsArr.push({
+            localStepsArr.push({
                 processId: processId,
-                elapsedTime: elapsedTime,
+                elapsedTime: localElapsedTime,
                 stepTime: Math.min(quantum, remainingTime)
             });
         }
 
-        return { stepsArr, processInfo };
+        return { localStepsArr, processInfo, localElapsedTime };
     }
 
-    function processSJF(queue) {
-        let stepsArr = [];
-        let elapsedTime = 0;
+    function processSJF(queue, initialElapsedTime) {
+        let localStepsArr = [];
+        let localElapsedTime = initialElapsedTime;
 
         queue.sort((a, b) => a[2] - b[2]); // Sort by burst time
 
         while (queue.length > 0) {
-            let availableProcesses = queue.filter(process => process[1] <= elapsedTime);
+            let availableProcesses = queue.filter(process => process[1] <= localElapsedTime);
 
             if (availableProcesses.length === 0) {
                 let nextArrivalTime = queue[0][1];
-                let idleTime = nextArrivalTime - elapsedTime;
+                let idleTime = nextArrivalTime - localElapsedTime;
 
-                stepsArr.push({
+                localStepsArr.push({
                     processId: 'Idle Time',
-                    elapsedTime: elapsedTime + idleTime,
+                    elapsedTime: localElapsedTime + idleTime,
                     stepTime: idleTime
                 });
 
-                elapsedTime = nextArrivalTime;
+                localElapsedTime = nextArrivalTime;
                 continue;
             }
 
             let nextProcess = availableProcesses.shift();
             let [processId, arrivalTime, burstTime, priority] = nextProcess;
 
-            let waitingTime = elapsedTime - arrivalTime;
+            let waitingTime = localElapsedTime - arrivalTime;
             let turnaroundTime = waitingTime + burstTime;
 
-            elapsedTime += burstTime;
+            localElapsedTime += burstTime;
 
-            stepsArr.push({
+            localStepsArr.push({
                 processId: processId,
-                elapsedTime: elapsedTime,
+                elapsedTime: localElapsedTime,
                 stepTime: burstTime
             });
 
@@ -583,18 +586,18 @@ function multiLevelQueue(data, rrQuantum) {
                 burstTime: burstTime,
                 waitingTime: waitingTime,
                 turnaroundTime: turnaroundTime,
-                elapsedTime: elapsedTime
+                elapsedTime: localElapsedTime
             };
 
             queue = queue.filter(process => process[0] !== processId);
         }
 
-        return { stepsArr, processInfo };
+        return { localStepsArr, processInfo, localElapsedTime };
     }
 
-    function processFCFS(queue) {
-        let stepsArr = [];
-        let elapsedTime = 0;
+    function processFCFS(queue, initialElapsedTime) {
+        let localStepsArr = [];
+        let localElapsedTime = initialElapsedTime;
 
         queue.sort((a, b) => a[1] - b[1]); // Sort by arrival time
 
@@ -602,24 +605,24 @@ function multiLevelQueue(data, rrQuantum) {
             let process = queue.shift();
             let [processId, arrivalTime, burstTime, priority] = process;
 
-            if (arrivalTime > elapsedTime) {
-                let idleTime = arrivalTime - elapsedTime;
-                stepsArr.push({
+            if (arrivalTime > localElapsedTime) {
+                let idleTime = arrivalTime - localElapsedTime;
+                localStepsArr.push({
                     processId: 'Idle Time',
-                    elapsedTime: elapsedTime + idleTime,
+                    elapsedTime: localElapsedTime + idleTime,
                     stepTime: idleTime
                 });
-                elapsedTime = arrivalTime;
+                localElapsedTime = arrivalTime;
             }
 
-            let waitingTime = elapsedTime - arrivalTime;
+            let waitingTime = localElapsedTime - arrivalTime;
             let turnaroundTime = waitingTime + burstTime;
 
-            elapsedTime += burstTime;
+            localElapsedTime += burstTime;
 
-            stepsArr.push({
+            localStepsArr.push({
                 processId: processId,
-                elapsedTime: elapsedTime,
+                elapsedTime: localElapsedTime,
                 stepTime: burstTime
             });
 
@@ -629,32 +632,35 @@ function multiLevelQueue(data, rrQuantum) {
                 burstTime: burstTime,
                 waitingTime: waitingTime,
                 turnaroundTime: turnaroundTime,
-                elapsedTime: elapsedTime
+                elapsedTime: localElapsedTime
             };
         }
 
-        return { stepsArr, processInfo };
+        return { localStepsArr, processInfo, localElapsedTime };
     }
 
     // Process high priority queue with Round Robin
     if (highPriorityQueue.length > 0) {
-        let { stepsArr: rrSteps, processInfo: rrInfo } = processRR(highPriorityQueue, rrQuantum);
+        let { localStepsArr: rrSteps, processInfo: rrInfo, localElapsedTime: rrElapsedTime } = processRR(highPriorityQueue, rrQuantum, elapsedTime);
         stepsArr = stepsArr.concat(rrSteps);
         Object.assign(processInfo, rrInfo);
+        elapsedTime = rrElapsedTime;
     }
 
     // Process medium priority queue with SJF
     if (mediumPriorityQueue.length > 0) {
-        let { stepsArr: sjfSteps, processInfo: sjfInfo } = processSJF(mediumPriorityQueue);
+        let { localStepsArr: sjfSteps, processInfo: sjfInfo, localElapsedTime: sjfElapsedTime } = processSJF(mediumPriorityQueue, elapsedTime);
         stepsArr = stepsArr.concat(sjfSteps);
         Object.assign(processInfo, sjfInfo);
+        elapsedTime = sjfElapsedTime;
     }
 
     // Process low priority queue with FCFS
     if (lowPriorityQueue.length > 0) {
-        let { stepsArr: fcfsSteps, processInfo: fcfsInfo } = processFCFS(lowPriorityQueue);
+        let { localStepsArr: fcfsSteps, processInfo: fcfsInfo, localElapsedTime: fcfsElapsedTime } = processFCFS(lowPriorityQueue, elapsedTime);
         stepsArr = stepsArr.concat(fcfsSteps);
         Object.assign(processInfo, fcfsInfo);
+        elapsedTime = fcfsElapsedTime;
     }
 
     console.log(stepsArr);

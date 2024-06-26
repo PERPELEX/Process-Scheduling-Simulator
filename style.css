@@ -80,7 +80,7 @@ form{
 .file-section{
     width: 25%;
     height: auto;
-    margin: 0 0 0 7.5%;
+    margin: 0 0 0 10%;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -102,6 +102,7 @@ form{
     border: 1px solid rgba(42, 78, 42, 0.5); 
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
 }
 
 .file::file-selector-button {
@@ -109,7 +110,6 @@ form{
     height: 40px;
     width: 45%;
     border: none;
-    border-radius: 10px 0 0 0; /* Rounded corners */
     padding: 5px 10px;
     margin-right: 11%;
     cursor: pointer;
@@ -136,7 +136,7 @@ form{
     border: 1px solid rgba(42, 78, 42, 0.5); 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    margin: 0 7.5% 0 0;
+    margin: 0 10% 0 0;
 }
 
 .radio-section input[type="radio"] {
@@ -231,7 +231,7 @@ input[type="number"] {
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     margin-top: 3%;
-    width: 85%;
+    width: 80%;
 }
 
 .gantt-chart,.time-chart, .process-data {
